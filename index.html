@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily News Briefing - 2026년 3월 10일</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0F172A;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  #root { width: 100%; display: flex; justify-content: center; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+const newsData = [
+  {
+    id: 1,
+    priority: "urgent",
+    priorityLabel: "긴급",
+    category: "🌍 국제",
+    title: "미-이스라엘 이란 공격 10일째, 트럼프 \"거의 끝났다\"",
+    summary: "미국-이스라엘의 이란 군사작전이 10일째 계속되는 가운데, 트럼프 대통령이 CBS 인터뷰에서 \"작전이 거의 완료됐다\"고 밝혔다. 미군 8명이 전사했으며, 이란 혁명수비대는 \"전쟁 종식은 미군이 아닌 우리 손에 달렸다\"고 반발했다.",
+    impact: "중동 전쟁의 종전 시점이 글로벌 경제와 에너지 시장의 향방을 결정할 핵심 변수",
+    source: "Al Jazeera, CNN, Bloomberg"
+  },
+  {
+    id: 2,
+    priority: "urgent",
+    priorityLabel: "긴급",
+    category: "💰 경제",
+    title: "글로벌 증시 급반등, 코스피 하루 만에 6%↑",
+    summary: "전날 서킷브레이커가 발동된 코스피가 하루 만에 6% 이상 급등하며 5,500선 회복. S&P 500도 장중 1.5% 하락을 만회하며 0.83% 상승 마감. 트럼프의 '전쟁 종전 임박' 발언이 안도 랠리를 촉발했다.",
+    impact: "전쟁 리스크 완화 기대감이 글로벌 투자심리를 급격히 전환시킨 변곡점",
+    source: "Bloomberg, CNBC, 머니투데이"
+  },
+  {
+    id: 3,
+    priority: "important",
+    priorityLabel: "중요",
+    category: "💰 경제",
+    title: "유가 롤러코스터: $120 근접 후 $86까지 급락",
+    summary: "원유가 배럴당 $120에 근접한 뒤 트럼프의 종전 시사 발언으로 급락해 $86대까지 하락. 브렌트유는 $91선으로 7% 이상 떨어졌다. 미 해군이 호르무즈 해협 유조선 호위를 발표하며 공급 안정 신호를 보냈다.",
+    impact: "유가 안정 여부가 각국 물가와 소비자 부담에 직결",
+    source: "CNN, Bloomberg, Yahoo Finance"
+  },
+  {
+    id: 4,
+    priority: "important",
+    priorityLabel: "중요",
+    category: "🌍 국제",
+    title: "미국 정부 셧다운 4주째, 공항 3시간 대기",
+    summary: "국토안보부 예산 교착으로 부분 셧다운이 4주째 지속. TSA 직원들이 급여를 받지 못하면서 출근율이 급감했고, 봄방학 시즌과 맞물려 주요 공항에서 보안검색 대기 3시간 이상 발생. 10만 명 이상 무급 근무 중.",
+    impact: "미국 내 정치적 교착이 시민 생활과 여행 산업에 직접적 타격",
+    source: "CNN, NBC News, NPR"
+  },
+  {
+    id: 5,
+    priority: "notable",
+    priorityLabel: "주목",
+    category: "⚾ 스포츠",
+    title: "'도쿄돔의 기적' 한국 야구 17년 만에 WBC 8강",
+    summary: "한국 야구대표팀이 호주를 7-2로 꺾고 2승 2패를 기록, 최소 실점률로 C조 2위를 차지하며 17년 만에 WBC 8강 진출에 성공했다. 2009년 준우승 이후 처음으로 조별리그를 통과했다.",
+    impact: "한국 야구의 부활을 알리는 상징적 성과, 마이애미 8강 토너먼트 진출",
+    source: "머니투데이, 한국경제, 헤럴드경제"
+  },
+  {
+    id: 6,
+    priority: "important",
+    priorityLabel: "중요",
+    category: "🔬 과학",
+    title: "해수면 상승 속도, 기존 예측보다 30cm 빨라",
+    summary: "최신 연구에 따르면 인간 활동으로 인한 해수면 상승이 정부 계획보다 훨씬 빠르게 진행 중이다. 수백 건의 과학 평가를 분석한 결과, 대부분이 기준 해안 수위를 약 30cm 과소평가한 것으로 나타났다.",
+    impact: "수천만 명이 해수면 상승으로 거주지를 잃을 위험에 처해",
+    source: "NPR, Democracy Now"
+  }
+];
+
+const keywords = ["이란 전쟁", "유가 폭등", "글로벌 증시", "정부 셧다운", "WBC 8강", "해수면 상승", "안도 랠리"];
+
+function CardNews() {
+  const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const totalCards = newsData.length + 2; // cover + news + closing
+
+  const urgentCount = newsData.filter(n => n.priority === "urgent").length;
+
+  const goTo = (idx) => {
+    if (isAnimating || idx === current) return;
+    setDirection(idx > current ? 1 : -1);
+    setIsAnimating(true);
+    setCurrent(idx);
+    setTimeout(() => setIsAnimating(false), 350);
+  };
+
+  const next = () => { if (current < totalCards - 1) goTo(current + 1); };
+  const prev = () => { if (current > 0) goTo(current - 1); };
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") prev();
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [current]);
+
+  const priorityColor = (p) => {
+    if (p === "urgent") return "#EF4444";
+    if (p === "important") return "#F97316";
+    return "#3B82F6";
+  };
+
+  const cardStyle = {
+    width: "100%",
+    maxWidth: 400,
+    minHeight: 520,
+    background: "#1E293B",
+    borderRadius: 16,
+    overflow: "hidden",
+    position: "relative",
+    display: "flex",
+    flexDirection: "column",
+  };
+
+  const renderCover = () => (
+    <div style={{ ...cardStyle, background: "linear-gradient(135deg, #1E293B 0%, #0F172A 50%, #1E293B 100%)", justifyContent: "center", alignItems: "center", padding: 32, textAlign: "center" }}>
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, background: "linear-gradient(90deg, #EF4444, #F97316, #3B82F6)" }} />
+      <div style={{ color: "#94A3B8", fontSize: "0.9rem", marginBottom: 16, letterSpacing: 2 }}>
+        2026년 3월 10일 화요일
+      </div>
+      <div style={{ fontSize: "2rem", fontWeight: 800, color: "#E2E8F0", letterSpacing: 4, marginBottom: 8 }}>
+        DAILY NEWS
+      </div>
+      <div style={{ fontSize: "1.5rem", fontWeight: 700, color: "#E2E8F0", letterSpacing: 6, marginBottom: 32 }}>
+        BRIEFING
+      </div>
+      <div style={{ width: 60, height: 2, background: "#3B82F6", margin: "0 auto 32px" }} />
+      <div style={{ color: "#94A3B8", fontSize: "0.85rem" }}>
+        오늘의 뉴스 {newsData.length}건 &nbsp;|&nbsp; 🔴 긴급 {urgentCount}건
+      </div>
+      <div style={{ position: "absolute", bottom: 20, color: "#475569", fontSize: "0.75rem" }}>
+        ← → 키 또는 버튼으로 탐색
+      </div>
+    </div>
+  );
+
+  const renderNews = (item) => (
+    <div style={cardStyle}>
+      <div style={{ height: 4, background: priorityColor(item.priority) }} />
+      <div style={{ padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{
+            width: 28, height: 28, borderRadius: "50%",
+            background: priorityColor(item.priority),
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: "0.75rem", fontWeight: 700, color: "#fff"
+          }}>
+            {item.id}
+          </div>
+          <span style={{
+            fontSize: "0.7rem", fontWeight: 600,
+            color: priorityColor(item.priority),
+            background: `${priorityColor(item.priority)}20`,
+            padding: "3px 8px", borderRadius: 4, letterSpacing: 1
+          }}>
+            {item.priorityLabel}
+          </span>
+        </div>
+        <span style={{
+          fontSize: "0.75rem", color: "#94A3B8",
+          background: "#0F172A", padding: "4px 10px", borderRadius: 12
+        }}>
+          {item.category}
+        </span>
+      </div>
+
+      <div style={{ padding: "0 20px 16px", flex: 1, display: "flex", flexDirection: "column" }}>
+        <h2 style={{ fontSize: "1.2rem", fontWeight: 700, color: "#E2E8F0", lineHeight: 1.4, marginBottom: 16 }}>
+          {item.title}
+        </h2>
+
+        <div style={{
+          background: "#0F172A", borderRadius: 12, padding: 16, marginBottom: 16,
+          fontSize: "0.85rem", color: "#CBD5E1", lineHeight: 1.7
+        }}>
+          {item.summary}
+        </div>
+
+        <div style={{
+          background: `${priorityColor(item.priority)}10`,
+          border: `1px solid ${priorityColor(item.priority)}30`,
+          borderRadius: 10, padding: "10px 14px", marginBottom: 16,
+          fontSize: "0.8rem", color: "#E2E8F0", lineHeight: 1.5
+        }}>
+          💡 <strong>왜 중요한가</strong> — {item.impact}
+        </div>
+
+        <div style={{ marginTop: "auto", fontSize: "0.7rem", color: "#64748B" }}>
+          📰 {item.source}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderClosing = () => (
+    <div style={{ ...cardStyle, justifyContent: "center", padding: 28 }}>
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, background: "linear-gradient(90deg, #3B82F6, #8B5CF6, #EC4899)" }} />
+
+      <h3 style={{ fontSize: "1.1rem", fontWeight: 700, color: "#E2E8F0", marginBottom: 20, textAlign: "center" }}>
+        🏷️ 오늘의 키워드
+      </h3>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", marginBottom: 28 }}>
+        {keywords.map((kw, i) => (
+          <span key={i} style={{
+            background: ["#EF444420", "#F9731620", "#3B82F620", "#8B5CF620", "#EC489820", "#10B98120", "#F59E0B20"][i],
+            color: ["#EF4444", "#F97316", "#3B82F6", "#8B5CF6", "#EC4899", "#10B981", "#F59E0B"][i],
+            padding: "6px 14px", borderRadius: 20, fontSize: "0.8rem", fontWeight: 600
+          }}>
+            {kw}
+          </span>
+        ))}
+      </div>
+
+      <div style={{
+        background: "#0F172A", borderRadius: 12, padding: 20, textAlign: "center", marginBottom: 28
+      }}>
+        <div style={{ fontSize: "0.8rem", color: "#94A3B8", marginBottom: 8 }}>📝 오늘의 한 줄 총평</div>
+        <div style={{ fontSize: "0.95rem", color: "#E2E8F0", fontWeight: 600, lineHeight: 1.6 }}>
+          중동 전쟁의 종전 기대감이 글로벌 시장을 요동치게 하는 가운데, 미국 내부 정치 마비와 한국 야구의 기적이 교차한 하루
+        </div>
+      </div>
+
+      <div style={{ textAlign: "center", color: "#475569", fontSize: "0.75rem" }}>
+        Powered by Claude
+      </div>
+    </div>
+  );
+
+  const renderCard = () => {
+    if (current === 0) return renderCover();
+    if (current === totalCards - 1) return renderClosing();
+    return renderNews(newsData[current - 1]);
+  };
+
+  return (
+    <div style={{ width: "100%", maxWidth: 400, margin: "20px auto", userSelect: "none" }}>
+      <div style={{ position: "relative", overflow: "hidden" }}>
+        <div style={{
+          transition: "transform 0.35s ease, opacity 0.35s ease",
+          transform: isAnimating ? `translateX(${direction * -30}px)` : "translateX(0)",
+          opacity: isAnimating ? 0.7 : 1,
+        }}>
+          {renderCard()}
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 16, padding: "0 4px" }}>
+        <button
+          onClick={prev}
+          disabled={current === 0}
+          style={{
+            width: 40, height: 40, borderRadius: "50%", border: "none",
+            background: current === 0 ? "#1E293B" : "#334155",
+            color: current === 0 ? "#475569" : "#E2E8F0",
+            fontSize: "1.1rem", cursor: current === 0 ? "default" : "pointer",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            transition: "all 0.2s"
+          }}
+        >
+          ‹
+        </button>
+
+        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          {Array.from({ length: totalCards }, (_, i) => (
+            <div
+              key={i}
+              onClick={() => goTo(i)}
+              style={{
+                width: current === i ? 20 : 6,
+                height: 6,
+                borderRadius: 3,
+                background: current === i ? "#3B82F6" : "#334155",
+                cursor: "pointer",
+                transition: "all 0.3s"
+              }}
+            />
+          ))}
+        </div>
+
+        <button
+          onClick={next}
+          disabled={current === totalCards - 1}
+          style={{
+            width: 40, height: 40, borderRadius: "50%", border: "none",
+            background: current === totalCards - 1 ? "#1E293B" : "#334155",
+            color: current === totalCards - 1 ? "#475569" : "#E2E8F0",
+            fontSize: "1.1rem", cursor: current === totalCards - 1 ? "default" : "pointer",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            transition: "all 0.2s"
+          }}
+        >
+          ›
+        </button>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<CardNews />);
+</script>
+</body>
+</html>
